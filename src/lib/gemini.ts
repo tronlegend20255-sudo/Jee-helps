@@ -1,6 +1,17 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+let aiClient: GoogleGenAI | null = null;
+
+function getAI() {
+  if (!aiClient) {
+    const key = process.env.GEMINI_API_KEY;
+    if (!key || key === "undefined") {
+      throw new Error("GEMINI_API_KEY environment variable is missing.");
+    }
+    aiClient = new GoogleGenAI({ apiKey: key });
+  }
+  return aiClient;
+}
 
 export async function generateStudyMaterial(subject: string, chapter: string, topic: string) {
   const prompt = `You are a JEE expert tutor. The student is studying Subject: ${subject}, Chapter: ${chapter}, Topic: ${topic} for JEE Mains and Advanced.
@@ -13,7 +24,7 @@ Also search the web (if possible) to get an accurate, high quality YouTube link 
 `;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: "gemini-3.1-pro-preview",
       contents: prompt,
       config: {
@@ -64,7 +75,7 @@ export async function generatePYQs(subject: string, chapter: string, topic: stri
 Provide the question text, the options (if it's MCQ), the correct answer, and a brief step-by-step solution.`;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: "gemini-3.1-pro-preview",
       contents: prompt,
       config: {
@@ -108,7 +119,7 @@ For ${isMains ? 'JEE Mains' : 'JEE Advanced'}, match the difficulty, style (sing
 Provide the question text (in Markdown), options (for MCQs), the correct answer, and a robust solution. Assign a subject ("Physics", "Chemistry", "Mathematics") to each.`;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: "gemini-3.1-pro-preview",
       contents: prompt,
       config: {
