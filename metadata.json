@@ -1,0 +1,6 @@
+{
+  "name": "JEE Nexus",
+  "description": "An AI-powered preparation platform for JEE Mains and Advanced. Features YouTube channel recommendations, AI-curated video lessons, short notes, flashcards, and top PYQs generated on demand using Gemini API.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
